@@ -1,0 +1,4 @@
+interface:
+  display_name: "发布作品集项目"
+  short_description: "将网页项目作为子页面发布到现有个人网站并完成线上验收"
+  default_prompt: "使用 $publishing-portfolio-projects 将这个网页项目加入我的个人网站作品集并验证上线。"
