@@ -1,6 +1,6 @@
 ---
 name: publishing-portfolio-projects
-description: Use when adding an already-built web project to an existing personal portfolio as a card and hosted subpage, especially with Git-backed static hosting, Vite base paths, Alibaba Cloud ESA Pages, CSP headers, WebGL, or live browser verification.
+description: 用于将现有网页项目发布为个人网站作品卡片和经过验证的独立子页面，并完成子路径构建、封面、导航、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 SKILL.md 的智能体平台。
 ---
 
 # Publishing Portfolio Projects
