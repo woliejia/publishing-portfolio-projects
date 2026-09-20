@@ -3,47 +3,47 @@ name: publishing-portfolio-projects
 description: 用于将现有网页项目发布为个人网站作品卡片和经过验证的独立子页面，并完成子路径构建、封面、导航、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 SKILL.md 的智能体平台。
 ---
 
-# Publishing Portfolio Projects
+# 发布作品集项目
 
-Publish the project as a real child page while preserving the portfolio's existing identity, stack, security, and deployment path. Completion means the homepage entry, deployed subpage, production headers, and user-visible interactions all work on the public domain.
+将项目发布为真实可访问的子页面，同时保留作品集原有的设计、技术栈、安全规则和部署方式。只有首页入口、线上子页面、生产响应头和用户可见交互都通过验证，任务才算完成。
 
-## Host portability
+## 跨平台原则
 
-Treat this file as the canonical, vendor-neutral skill definition. Use capabilities by purpose rather than by a vendor-specific tool name: inspect files, run commands, edit files, control a browser, and read live HTTP responses with whatever equivalent tools the current host provides.
+本文件是厂商无关的核心技能定义。按照能力选择当前平台提供的工具，而不是依赖某个厂商的工具名称：读取和搜索文件、执行命令、编辑文件、操作浏览器以及读取线上 HTTP 响应。
 
-- Do not require `agents/openai.yaml`; it is an optional Codex presentation adapter.
-- Do not add host-specific frontmatter fields to this canonical file. Keep only the portable `name` and `description` fields.
-- If the host cannot execute a bundled script, reproduce the same checks with its available shell or explain the exact manual command.
-- If browser automation is unavailable, complete all local work, then provide precise production checks without claiming they passed.
-- Follow the current host's authorization rules before publishing, changing cloud configuration, or performing other external mutations.
+- 不依赖 `agents/openai.yaml`；该文件只是可选的 Codex 展示适配层。
+- 核心 frontmatter 只保留通用的 `name` 和 `description` 字段。
+- 当前平台无法运行附带脚本时，使用可用终端复现同等检查，或明确给出人工检查命令。
+- 没有浏览器自动化能力时，先完成所有本地工作，再列出尚未验证的线上项目，不得声称已经通过。
+- 发布、修改云端配置或执行其他外部操作前，遵循当前平台的授权规则。
 
-Read [references/platform-compatibility.md](references/platform-compatibility.md) when installing or adapting this skill for Codex, WorkBuddy, CodeBuddy, Coze, Doubao-based workflows, or another agent host.
+在 Codex、WorkBuddy、CodeBuddy、扣子、豆包模型工作流或其他智能体平台安装时，阅读 [平台兼容说明](references/platform-compatibility.md)。
 
-## Required inputs
+## 必要输入
 
-Infer these from the workspace and hosting console before asking the user: portfolio repository, deploy provider, public/build directory, intended slug, project build command, cover source, and canonical domain. Ask only for information that cannot be discovered.
+优先从工作区和托管控制台中识别以下信息，不要先询问用户：作品集仓库、部署平台、公开或构建目录、目标 slug、项目构建命令、封面来源和正式域名。只有无法发现的信息才向用户询问。
 
-## Workflow
+## 工作流程
 
-1. Read repository instructions, deployment config, homepage structure, tests, and current response headers. Record the pre-change Git status.
-2. Choose a stable lowercase slug. Build the child app for `/<slug>/`; for Vite use `vite build --base=/<slug>/`. Replace root-absolute application assets with `BASE_URL` or equivalent. Add a return link to `/#projects` when embedded.
-3. Produce the cover from a verified application render. Keep its aspect ratio and descriptive alt text. Do not depend on a remote image host.
-4. Copy the production bundle into the portfolio's static output directory at `<public>/<slug>/`. Add a real homepage card, CTA, responsive styling, and sitemap entry. Preserve existing typography, metadata, navigation, and unrelated content.
-5. Run `node scripts/check-release.mjs <public-dir> <slug>`, repository tests, and the project's production build. Serve the exact static directory with a plain static server for integration checks; a framework development server can rewrite paths or expose development-only globals.
-6. Verify homepage → card → subpage → return navigation in a production browser. Exercise representative interactions, mobile layout, local assets, console errors, and downloadable output. Validate downloaded image dimensions and non-empty pixels where export exists.
-7. Commit only reviewed files, push the deployment branch, and verify the public domain. Do not report local success as deployment success.
+1. 阅读仓库说明、部署配置、首页结构、测试和当前响应头；记录修改前的 Git 状态。
+2. 选择稳定的小写 slug。将子项目构建到 `/<slug>/`；Vite 使用 `vite build --base=/<slug>/`。把根绝对资源路径改为 `BASE_URL` 或框架等价方式。嵌入作品集后添加返回 `/#projects` 的入口。
+3. 从验证通过的真实应用画面制作封面。保持宽高比和准确的替代文本，不依赖远程图片服务。
+4. 将生产构建复制到作品集静态目录的 `<public>/<slug>/`。添加真实首页卡片、操作入口、响应式样式和站点地图条目，保留现有字体、元数据、导航和无关内容。
+5. 运行 `node scripts/check-release.mjs <public-dir> <slug>`、仓库测试和项目生产构建。使用普通静态服务器打开最终目录；框架开发服务器可能重写路径或暴露仅开发环境存在的全局对象。
+6. 在生产浏览器中验证“首页 → 卡片 → 子页面 → 返回入口”。检查代表性交互、移动端布局、本地资源、控制台错误和下载内容。存在导出功能时，验证文件尺寸和非空像素。
+7. 只提交已审查的文件，推送部署分支并验证公开域名。不得把本地成功描述为线上发布成功。
 
-Read [references/verification.md](references/verification.md) for the acceptance matrix. For Alibaba Cloud ESA Pages or CSP failures, read [references/esa-pages.md](references/esa-pages.md).
+完整验收项见 [验收矩阵](references/verification.md)。遇到阿里云 ESA Pages 或 CSP 问题时，阅读 [ESA Pages 与 CSP](references/esa-pages.md)。
 
-## Release invariants
+## 发布约束
 
-- Keep app data/config separate from rendering when future edits depend on it.
-- Never globally weaken a portfolio security header to make one project work. Scope overrides to the project hostname and path.
-- Ensure a later path-specific rule actually overrides an earlier general rule; confirm the live header rather than assuming rule order.
-- If WebGL export is black at a large size, reproduce with pixel checks and lower only to the documented minimum acceptable resolution.
-- Use fresh browser processes for GPU-heavy desktop export and mobile checks when concurrent WebGL contexts cause shader or context-loss noise.
-- Stop before the final external mutation when the active computer-use confirmation policy requires action-time approval.
+- 后续需要调整时，将应用数据和配置与渲染逻辑分离。
+- 不得为了一个子项目放宽整个作品集的安全响应头；规则必须限定到目标主机和路径。
+- 路径规则应能覆盖之前的通用规则，并以线上真实响应头为准。
+- WebGL 大尺寸导出出现黑图时，先用像素检查复现，再降低到需求允许的最低分辨率。
+- 桌面高清导出和移动端 WebGL 检查应使用新的浏览器进程，避免并发上下文造成着色器或上下文丢失噪声。
+- 当前平台要求外部操作确认时，在最终操作前停下并取得授权。
 
-## Delivery
+## 交付内容
 
-Return the public subpage and portfolio URLs, commit/deployment identity, source/config locations, assumptions, verification evidence, and only material limitations.
+返回公开子页面和作品集地址、提交或部署标识、源码与配置位置、采用的假设、验证证据，以及确实存在的限制。

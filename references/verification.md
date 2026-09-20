@@ -1,32 +1,32 @@
-# Verification matrix
+# 验收矩阵
 
-Use the checks that match the project. A green build alone is insufficient.
+根据项目选择适用检查。仅有构建成功不能证明发布完成。
 
-| Layer | Required evidence |
+| 范围 | 必须提供的证据 |
 |---|---|
-| Source | Clean pre-change status recorded; existing instructions and stack respected |
-| Child build | Production build succeeds with the final subpath base; no `/src/`, Vite client, or `node_modules` references |
-| Static release | Homepage links to `/<slug>/`; child `index.html` and every local asset resolve; sitemap contains the child URL when present |
-| Cover/card | Cover loads at non-zero natural dimensions; aspect ratio, alt text, CTA, focus state, and mobile layout are usable |
-| Navigation | Homepage card opens the child page; child return control restores `/#projects` |
-| Product | Primary interactions change real application state; persistence survives reload if promised |
-| Export | Download event fires; file signature, dimensions, minimum resolution, and non-black/non-empty pixels pass; UI state recovers |
-| Resilience | WebGL/fallback behavior and missing-resource errors are checked where applicable |
-| Production | Public URL returns 200; expected CSP is present; scripts/styles/images load; no functional console/page errors |
-| Mobile | Narrow viewport has no horizontal overflow; essential controls remain reachable |
+| 源码 | 已记录修改前状态，并遵循现有仓库说明和技术栈 |
+| 子项目构建 | 使用最终子路径完成生产构建；不存在 `/src/`、Vite 客户端或 `node_modules` 引用 |
+| 静态发布 | 首页链接到 `/<slug>/`；子页面入口和所有本地资源存在；存在站点地图时已包含子页面 URL |
+| 封面与卡片 | 封面自然尺寸大于零；宽高比、替代文本、入口、焦点状态和移动端布局可用 |
+| 导航 | 首页卡片能进入子页面；子页面返回入口能回到 `/#projects` |
+| 产品交互 | 主要功能会改变真实应用状态；声明支持持久化时，刷新后状态仍保留 |
+| 导出 | 下载事件发生；文件签名、尺寸、最低分辨率和非黑图、非空像素检查通过；导出后交互状态恢复 |
+| 异常处理 | 按项目检查 WebGL 降级、缺失资源提示和错误状态 |
+| 生产环境 | 公开 URL 返回成功；CSP 符合预期；脚本、样式、图片正常加载；没有影响功能的控制台错误 |
+| 移动端 | 窄屏没有横向溢出，核心控制保持可见且可以操作 |
 
-## Browser-test shape
+## 浏览器检查方式
 
-Prefer separate production-browser runs for:
+建议把以下测试放在独立的生产浏览器进程中：
 
-1. Homepage navigation and ordinary interactions.
-2. High-resolution WebGL export.
-3. Mobile WebGL layout.
+1. 首页导航和普通交互。
+2. 高清 WebGL 导出。
+3. 移动端 WebGL 布局。
 
-This isolates GPU-heavy contexts and makes a failure attributable. Wait for images with `decode()` or a natural-dimension condition; DOM visibility alone does not prove a lazy image loaded.
+这样可以隔离高负载 GPU 上下文，也更容易定位失败原因。等待图片时使用 `decode()` 或自然尺寸条件；元素出现在 DOM 中并不代表懒加载图片已经完成解码。
 
-For PNG export, inspect the PNG signature and width/height bytes, then sample a downscaled canvas. Reject all-black, transparent, or very low-color output. Preserve the app's interactive state after export.
+验证 PNG 导出时，检查 PNG 文件签名和宽高字节，再把图片缩小到画布中取样。全黑、全透明或颜色极少的输出应判定为失败。导出完成后确认应用交互状态已经恢复。
 
-## Reporting failed checks
+## 报告失败项
 
-Name the failed check and the observed evidence. Separate an application defect from a test-environment limitation. Re-run a WebGL failure in a fresh browser process before classifying it as an application defect.
+指出失败的具体检查和观测证据，区分应用缺陷与测试环境限制。WebGL 失败应先在新的浏览器进程中复现，再判断是否属于应用缺陷。

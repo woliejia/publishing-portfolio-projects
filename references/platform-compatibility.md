@@ -1,28 +1,28 @@
-# Platform compatibility
+# 平台兼容说明
 
-The root `SKILL.md` is the canonical definition. It uses only the common `name` and `description` frontmatter fields and relative links to bundled resources.
+根目录的 `SKILL.md` 是唯一核心定义，只使用通用的 `name`、`description` 字段和相对资源链接。
 
-Compatibility notes were checked against the official platform documentation on 2026-09-20:
+兼容信息最后核对日期为 2026-09-20，参考以下官方文档：
 
-- [WorkBuddy Skills](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)
+- [WorkBuddy 技能说明](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market)
 - [CodeBuddy Code Skills](https://www.codebuddy.cn/docs/cli/skills)
-- [Coze: use skills](https://docs.coze.cn/guides_using_skill)
-- [Coze: develop skills](https://docs.coze.cn/guides_vibe_coding_skill)
+- [扣子：使用技能](https://docs.coze.cn/guides_using_skill)
+- [扣子：开发技能](https://docs.coze.cn/guides_vibe_coding_skill)
 
-## Compatibility matrix
+## 兼容矩阵
 
-| Host | Native use | Installation |
+| 平台 | 原生使用 | 安装方式 |
 |---|---|---|
-| Codex | Yes | Copy the folder to `~/.codex/skills/publishing-portfolio-projects/`. `agents/openai.yaml` is an optional UI adapter. |
-| WorkBuddy | Yes | Import a ZIP whose root contains `SKILL.md`, or copy the folder to `~/.workbuddy/skills/publishing-portfolio-projects/`. Project installations may use `.workbuddy/skills/`. |
-| CodeBuddy | Yes | Copy the folder to `~/.codebuddy/skills/publishing-portfolio-projects/` or `.codebuddy/skills/publishing-portfolio-projects/`. The canonical skill intentionally omits CodeBuddy-only `allowed-tools`. |
-| Coze / 扣子 | Yes, through custom skill upload | Upload a platform-accepted skill package containing at least `SKILL.md` and the referenced resources. When the UI requires a `.skill` file, create or import the skill in Coze and use its generated package instead of merely renaming a ZIP. |
-| Doubao / 豆包 workflows | Via Coze or prompt fallback | Use the custom skill in a Coze agent or workflow configured with a Doubao model. A regular Doubao chat interface may not expose file-based skill installation. |
-| Other Agent Skills hosts | Usually | Install the folder in the host's documented skill directory. If automatic discovery is unavailable, attach the folder or paste `SKILL.md` as task instructions. |
+| Codex | 支持 | 复制到 `~/.codex/skills/publishing-portfolio-projects/`；`agents/openai.yaml` 只是可选界面适配层 |
+| WorkBuddy | 支持 | 上传根目录包含 `SKILL.md` 的 ZIP，或复制到 `~/.workbuddy/skills/`；项目级可使用 `.workbuddy/skills/` |
+| CodeBuddy | 支持 | 复制到 `~/.codebuddy/skills/` 或 `.codebuddy/skills/`；核心文件不加入 CodeBuddy 专属 `allowed-tools` |
+| 扣子 Coze | 支持自定义技能上传 | 上传至少包含 `SKILL.md` 和引用资源的平台兼容技能包；页面要求 `.skill` 时由扣子生成，不要仅修改 ZIP 扩展名 |
+| 豆包工作流 | 通过扣子或提示词降级 | 在使用豆包模型的扣子 Agent 或工作流中添加本技能；普通豆包聊天界面可能没有文件型 Skill 导入入口 |
+| 其他 Agent Skills 平台 | 通常支持 | 按平台文档安装技能目录；无法自动发现时，附加目录或把 `SKILL.md` 作为任务说明 |
 
-## Package requirements
+## 技能包结构
 
-For folder or ZIP import, keep this layout at the package root:
+目录或 ZIP 导入时，在包根目录保留：
 
 ```text
 SKILL.md
@@ -30,43 +30,39 @@ references/
 scripts/
 ```
 
-The `agents/` directory is optional. A host that does not understand it should ignore it.
+`agents/` 是可选目录，不识别它的平台应直接忽略。不得压平 `references/` 或 `scripts/`，因为核心文件使用相对路径。不得打包 `.git`、构建产物、凭据、环境变量文件或本机专属路径。
 
-Do not flatten `references/` or `scripts/`, because `SKILL.md` uses relative paths. Do not include `.git`, local build outputs, credentials, environment files, or machine-specific paths.
+## 能力映射
 
-## Capability mapping
+本技能依赖功能能力，不依赖固定工具名称：
 
-The workflow needs functional capabilities rather than named tools:
-
-| Capability | Purpose |
+| 能力 | 用途 |
 |---|---|
-| File read/search | Discover repository instructions, build configuration, and homepage structure |
-| File edit | Add the child bundle, card, navigation, sitemap entry, and documentation |
-| Command execution | Build, test, run `scripts/check-release.mjs`, and inspect Git state |
-| Browser or HTTP access | Verify public pages, response headers, console errors, and real interactions |
-| Git/network publishing | Commit and push the reviewed release when the user authorizes publishing |
+| 文件读取和搜索 | 识别仓库说明、构建配置和首页结构 |
+| 文件编辑 | 添加子项目构建、卡片、导航、站点地图和文档 |
+| 命令执行 | 构建、测试、运行检查脚本和读取 Git 状态 |
+| 浏览器或 HTTP 访问 | 验证公开页面、响应头、控制台错误和真实交互 |
+| Git 与网络发布 | 用户授权后提交并推送经过审查的版本 |
 
-If a capability is absent, finish independent work and state which evidence remains unavailable.
+缺少某项能力时，完成不依赖它的工作，并明确列出无法取得的证据。
 
-## Prompt-only fallback
+## 无技能系统时的使用方式
 
-On a host without a skill system:
+1. 在任务开始时附加或粘贴 `SKILL.md`。
+2. 附加 `references/verification.md`；使用 ESA 时再附加 `references/esa-pages.md`。
+3. 提供网页项目、作品集仓库、目标 slug 和正式域名。
+4. 要求智能体遵循工作流程，并逐项报告没有实际验证的生产检查。
 
-1. Attach or paste `SKILL.md` at the start of the task.
-2. Attach `references/verification.md` and, for ESA, `references/esa-pages.md`.
-3. Provide the existing web project, portfolio repository, intended slug, and public domain.
-4. Ask the agent to follow the workflow and report each unverified production check explicitly.
-
-The deterministic checker can still run anywhere Node.js is available:
+有 Node.js 时仍可运行确定性检查：
 
 ```bash
 node scripts/check-release.mjs path/to/public project-slug
 ```
 
-## Platform-specific metadata
+## 平台专属元数据
 
-Keep host-specific metadata outside the canonical `SKILL.md`. This prevents one host's optional fields, tool names, or invocation syntax from breaking another host.
+平台专属配置应放在核心 `SKILL.md` 之外，避免某个平台的字段、工具名或调用语法破坏其他平台的解析。
 
-- Codex UI metadata lives in `agents/openai.yaml`.
-- CodeBuddy permissions should be configured at install time or in a platform-specific copy if an organization requires `allowed-tools`.
-- Coze packaging metadata should be generated by Coze when its UI requires a `.skill` artifact.
+- Codex 界面元数据位于 `agents/openai.yaml`。
+- CodeBuddy 权限应在安装时配置；组织必须使用 `allowed-tools` 时，可维护平台专属副本。
+- 扣子要求 `.skill` 时，应由扣子生成相应包格式。

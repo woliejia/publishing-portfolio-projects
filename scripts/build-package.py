@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a deterministic, vendor-neutral skill ZIP with SKILL.md at its root."""
+"""构建根目录包含 SKILL.md、结果可重复的厂商无关技能 ZIP。"""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 FILES = (
     "SKILL.md",
     "LICENSE",
+    "LICENSE.zh-CN.md",
     "references/esa-pages.md",
     "references/platform-compatibility.md",
     "references/verification.md",
@@ -24,7 +25,7 @@ FILES = (
 def build(output: Path) -> str:
     missing = [relative for relative in FILES if not (ROOT / relative).is_file()]
     if missing:
-        raise SystemExit(f"Missing package files: {', '.join(missing)}")
+        raise SystemExit(f"缺少技能包文件：{', '.join(missing)}")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
@@ -49,8 +50,8 @@ def main() -> None:
     args = parser.parse_args()
     output = args.output.resolve()
     digest = build(output)
-    print(f"PASS {output}")
-    print(f"SHA256 {digest}")
+    print(f"通过：已生成 {output}")
+    print(f"SHA-256：{digest}")
 
 
 if __name__ == "__main__":
