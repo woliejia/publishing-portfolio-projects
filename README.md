@@ -1,6 +1,6 @@
 # Publishing Portfolio Projects｜发布作品集项目
 
-一个可复用的 Codex 技能，用于把已经完成的网页项目作为**作品卡片和独立子页面**加入现有个人网站，并完成构建、部署与线上验收。
+一个遵循通用 `SKILL.md` 结构的 Agent Skill，用于把已经完成的网页项目作为**作品卡片和独立子页面**加入现有个人网站，并完成构建、部署与线上验收。
 
 本技能覆盖子路径构建、本地封面、首页作品卡片、返回入口、站点地图、生产环境浏览器检查、WebGL 导出验证，以及阿里云 ESA Pages 的路径级 CSP 配置。
 
@@ -28,13 +28,74 @@
 
 技能会先从仓库、配置文件和部署设置中自动发现这些信息，只在无法确定时询问用户。
 
+### 平台兼容性
+
+| 平台 | 兼容方式 | 推荐入口 |
+|---|---|---|
+| Codex | 原生读取 `SKILL.md` | `~/.codex/skills/` |
+| WorkBuddy | 上传技能包或复制技能目录 | `~/.workbuddy/skills/`、`.workbuddy/skills/` |
+| CodeBuddy | 用户级或项目级 Skill | `~/.codebuddy/skills/`、`.codebuddy/skills/` |
+| 扣子 Coze | 上传自定义技能包 | 编程技能面板的“创建技能 → 本地上传” |
+| 豆包工作流 | 通过使用豆包模型的扣子 Agent/工作流 | 在扣子中添加本技能 |
+| 其他 Agent | Agent Skills 或提示词降级 | 导入技能目录，或附加 `SKILL.md` |
+
+普通豆包聊天界面不一定提供文件型 Skill 导入入口。“豆包可用”指通过扣子中配置豆包模型的 Agent/工作流使用，或将本技能作为任务说明交给具备文件和命令工具的智能体。详细边界见 [`references/platform-compatibility.md`](references/platform-compatibility.md)。
+
 ### 安装方法
 
-将本仓库复制或克隆到 Codex 技能目录：
+#### Codex
+
+复制或克隆到：
 
 ```text
 ~/.codex/skills/publishing-portfolio-projects/
 ```
+
+#### WorkBuddy
+
+在技能界面上传一个以 `SKILL.md` 为根文件的 ZIP，或者复制到：
+
+```text
+~/.workbuddy/skills/publishing-portfolio-projects/
+```
+
+项目级安装可使用：
+
+```text
+.workbuddy/skills/publishing-portfolio-projects/
+```
+
+#### CodeBuddy
+
+用户级安装：
+
+```text
+~/.codebuddy/skills/publishing-portfolio-projects/
+```
+
+项目级安装：
+
+```text
+.codebuddy/skills/publishing-portfolio-projects/
+```
+
+#### 扣子 / 豆包模型工作流
+
+在扣子编程的技能面板选择“创建技能 → 本地上传”，上传符合页面要求的技能包。如果页面要求 `.skill` 文件，应通过扣子创建或导入本技能后，由扣子生成 `.skill`，不要仅修改 ZIP 扩展名。之后把技能添加到使用豆包模型的 Agent 或工作流。
+
+#### 无原生 Skill 功能的平台
+
+将 `SKILL.md`、`references/verification.md` 和需要的参考文件附加到对话，并要求智能体严格执行其中流程。Node.js 可用时仍可运行确定性检查脚本。
+
+#### 构建通用 ZIP
+
+仓库提供跨平台 Python 打包脚本。生成的 ZIP 根目录直接包含 `SKILL.md`，不携带 Codex 专属适配文件：
+
+```bash
+python scripts/build-package.py
+```
+
+输出文件位于 `dist/publishing-portfolio-projects-universal.zip`，命令同时打印 SHA-256 校验值。该 ZIP 适合 WorkBuddy 上传，也可作为其他支持通用 Agent Skill 包的平台输入。扣子页面要求 `.skill` 时仍应由扣子生成该格式。
 
 目录结构：
 
@@ -45,23 +106,26 @@ publishing-portfolio-projects/
 │   └── openai.yaml
 ├── references/
 │   ├── esa-pages.md
+│   ├── platform-compatibility.md
 │   └── verification.md
 └── scripts/
+    ├── build-package.py
+    ├── check-portability.mjs
     └── check-release.mjs
 ```
 
-安装后重新启动或刷新 Codex，使技能目录重新加载。
+安装后重新启动或刷新对应 Agent，使技能目录重新加载。
 
 ### 调用方式
 
 ```text
-使用 $publishing-portfolio-projects 将这个网页项目加入我的个人网站作品集，并完成上线验证。
+使用 publishing-portfolio-projects 技能，将这个网页项目加入我的个人网站作品集，并完成上线验证。
 ```
 
 也可以指定子路径和验收要求：
 
 ```text
-使用 $publishing-portfolio-projects 发布这个项目。
+使用 publishing-portfolio-projects 技能发布这个项目。
 子路径使用 /design-studio/，封面从实际应用截图生成，并检查移动端和 CSP。
 ```
 
@@ -243,7 +307,7 @@ MIT，详见 [`LICENSE`](LICENSE)。
 
 ### Overview
 
-This reusable Codex skill publishes an existing web project as a portfolio card and hosted child page. It covers subpath builds, local cover images, homepage entries, return navigation, sitemap updates, production browser checks, WebGL export validation, and path-scoped CSP rules for Alibaba Cloud ESA Pages.
+This vendor-neutral Agent Skill publishes an existing web project as a portfolio card and hosted child page. It uses a portable `SKILL.md` core and covers subpath builds, local cover images, homepage entries, return navigation, sitemap updates, production browser checks, WebGL export validation, and path-scoped CSP rules for Alibaba Cloud ESA Pages.
 
 ### Use cases
 
@@ -258,26 +322,71 @@ This reusable Codex skill publishes an existing web project as a portfolio card 
 
 Prepare a runnable web project, an existing portfolio repository, its static output directory, a lowercase slug, and deployment access. The skill discovers available details before asking questions.
 
+### Platform compatibility
+
+| Host | Native path or method |
+|---|---|
+| Codex | `~/.codex/skills/publishing-portfolio-projects/` |
+| WorkBuddy | ZIP upload, `~/.workbuddy/skills/`, or `.workbuddy/skills/` |
+| CodeBuddy | `~/.codebuddy/skills/` or `.codebuddy/skills/` |
+| Coze | Custom skill upload in the programming skill panel |
+| Doubao workflows | Add the skill to a Coze Agent or workflow using a Doubao model |
+| Other agents | Agent Skills installation or prompt-only fallback |
+
+A regular Doubao chat interface may not expose file-based skill installation. Doubao compatibility means using the skill through Coze with a Doubao model, or supplying the portable instructions to a tool-capable agent. See [`references/platform-compatibility.md`](references/platform-compatibility.md).
+
 ### Installation
 
-Copy or clone the repository into:
+#### Codex
 
 ```text
 ~/.codex/skills/publishing-portfolio-projects/
 ```
 
-Restart or reload Codex so the skill catalog refreshes.
+#### WorkBuddy
+
+Upload a ZIP with `SKILL.md` at its root, or copy the folder to:
+
+```text
+~/.workbuddy/skills/publishing-portfolio-projects/
+```
+
+Use `.workbuddy/skills/publishing-portfolio-projects/` for project scope.
+
+#### CodeBuddy
+
+Use `~/.codebuddy/skills/publishing-portfolio-projects/` for user scope or `.codebuddy/skills/publishing-portfolio-projects/` for project scope.
+
+#### Coze and Doubao-model workflows
+
+Use **Create skill → Local upload** in the Coze programming skill panel. If the UI requires a `.skill` artifact, let Coze create or import the skill and generate that artifact; do not rename a ZIP. Add the installed skill to an Agent or workflow configured with a Doubao model.
+
+#### Prompt-only fallback
+
+Attach `SKILL.md`, `references/verification.md`, and any required reference files, then instruct the agent to follow them. The deterministic Node.js checker remains usable when command execution is available.
+
+#### Build a universal ZIP
+
+Use the cross-platform Python packager:
+
+```bash
+python scripts/build-package.py
+```
+
+It creates `dist/publishing-portfolio-projects-universal.zip` with `SKILL.md` at the archive root and prints its SHA-256 digest. The archive is suitable for WorkBuddy and other generic Agent Skill importers. Let Coze generate a `.skill` artifact when that format is required.
+
+Restart or reload the host after a filesystem installation.
 
 ### Usage
 
 ```text
-Use $publishing-portfolio-projects to add this web project to my portfolio and verify the public deployment.
+Use the publishing-portfolio-projects skill to add this web project to my portfolio and verify the public deployment.
 ```
 
 You may include a slug and acceptance requirements:
 
 ```text
-Use $publishing-portfolio-projects to publish this project under /design-studio/.
+Use the publishing-portfolio-projects skill to publish this project under /design-studio/.
 Create the cover from the verified application and check mobile layout and CSP.
 ```
 

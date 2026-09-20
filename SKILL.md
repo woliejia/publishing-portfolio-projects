@@ -7,6 +7,18 @@ description: Use when adding an already-built web project to an existing persona
 
 Publish the project as a real child page while preserving the portfolio's existing identity, stack, security, and deployment path. Completion means the homepage entry, deployed subpage, production headers, and user-visible interactions all work on the public domain.
 
+## Host portability
+
+Treat this file as the canonical, vendor-neutral skill definition. Use capabilities by purpose rather than by a vendor-specific tool name: inspect files, run commands, edit files, control a browser, and read live HTTP responses with whatever equivalent tools the current host provides.
+
+- Do not require `agents/openai.yaml`; it is an optional Codex presentation adapter.
+- Do not add host-specific frontmatter fields to this canonical file. Keep only the portable `name` and `description` fields.
+- If the host cannot execute a bundled script, reproduce the same checks with its available shell or explain the exact manual command.
+- If browser automation is unavailable, complete all local work, then provide precise production checks without claiming they passed.
+- Follow the current host's authorization rules before publishing, changing cloud configuration, or performing other external mutations.
+
+Read [references/platform-compatibility.md](references/platform-compatibility.md) when installing or adapting this skill for Codex, WorkBuddy, CodeBuddy, Coze, Doubao-based workflows, or another agent host.
+
 ## Required inputs
 
 Infer these from the workspace and hosting console before asking the user: portfolio repository, deploy provider, public/build directory, intended slug, project build command, cover source, and canonical domain. Ask only for information that cannot be discovered.
