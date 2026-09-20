@@ -43,6 +43,22 @@
 
 普通豆包聊天界面不一定提供文件型 Skill 导入入口。“豆包可用”指通过扣子中配置豆包模型的 Agent/工作流使用，或将本技能作为任务说明交给具备文件和命令工具的智能体。详细边界见 [`references/platform-compatibility.md`](references/platform-compatibility.md)。
 
+### 部署平台兼容性
+
+技能会先识别托管平台，再应用对应配置，不会把阿里云 ESA 的规则直接套用到腾讯云或其他平台。
+
+| 部署平台 | 主要适配内容 |
+|---|---|
+| 腾讯云 EdgeOne Pages | `edgeone.json`、构建与输出目录、路径级响应头、缓存及路由限制 |
+| 腾讯云 CloudBase | 本地或 Git 部署、自定义域名、路由、节点缓存和浏览器缓存 |
+| 腾讯云 COS + CDN | 静态网站源站、自定义域名、索引文档、对象元数据、回源鉴权和 HTTPS |
+| 腾讯云 EdgeOne 站点加速 | 路径级响应头、访问重定向、回源重写和多层缓存冲突检查 |
+| 阿里云 ESA Pages | `esa.jsonc`、规则顺序、路径级 CSP 和传播验证 |
+| Vercel / Netlify / GitHub Pages | 构建目录、子路径、响应头或重定向能力及平台限制 |
+| Nginx / Apache | 目录映射、索引、MIME、缓存、HTTPS 和 SPA 回退 |
+
+详细的平台识别、配置示例和验收步骤见 [`references/deployment-platforms.md`](references/deployment-platforms.md)。
+
 ### 安装方法
 
 #### Codex
@@ -109,6 +125,7 @@ publishing-portfolio-projects/
 ├── agents/
 │   └── openai.yaml
 ├── references/
+│   ├── deployment-platforms.md
 │   ├── esa-pages.md
 │   ├── platform-compatibility.md
 │   └── verification.md
@@ -230,6 +247,7 @@ node scripts/check-release.mjs path/to/public design-studio
 #### 10. 部署并检查线上环境
 
 - 提交经过审查的文件并推送部署分支。
+- 根据实际平台配置构建输出目录、路由、缓存、自定义域名和路径级安全响应头。
 - 等待部署完成后访问公开域名。
 - 检查首页和子页面状态、实际响应头、CSP 和控制台。
 - 再次执行首页 → 子页面 → 返回入口的完整路径。

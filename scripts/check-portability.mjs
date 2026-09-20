@@ -41,7 +41,7 @@ if (!fs.existsSync(skillPath)) {
   }
 }
 
-for (const relative of ['references/verification.md', 'references/platform-compatibility.md', 'scripts/check-release.mjs']) {
+for (const relative of ['references/verification.md', 'references/platform-compatibility.md', 'references/deployment-platforms.md', 'scripts/check-release.mjs']) {
   if (!fs.existsSync(path.join(root, relative))) failures.push(`缺少通用资源：${relative}`);
 }
 

@@ -15,6 +15,7 @@ FILES = (
     "LICENSE",
     "LICENSE.zh-CN.md",
     "references/esa-pages.md",
+    "references/deployment-platforms.md",
     "references/platform-compatibility.md",
     "references/verification.md",
     "scripts/check-portability.mjs",
