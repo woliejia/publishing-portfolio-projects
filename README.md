@@ -2,9 +2,9 @@
 
 一个遵循通用 `SKILL.md` 结构的 Agent Skill，用于把已经完成的网页项目作为**作品卡片和独立子页面**加入现有个人网站，并完成构建、部署与线上验收。
 
-本技能覆盖子路径构建、本地封面、首页作品卡片、返回入口、站点地图、生产环境浏览器检查、WebGL 导出验证，以及阿里云 ESA Pages 的路径级 CSP 配置。
+本技能覆盖子路径构建、本地封面、首页作品卡片、视频画廊、返回入口、站点地图、生产环境浏览器检查、WebGL 导出验证，以及阿里云 ESA Pages 的路径级 CSP 配置。
 
-> **技能描述：** 用于将现有网页项目发布为个人网站作品卡片和经过验证的独立子页面，并完成子路径构建、封面、导航、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 `SKILL.md` 的智能体平台。
+> **技能描述：** 用于向个人网站作品集发布网页项目、视频或图片作品，并完成作品入口、子路径、媒体托管、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 `SKILL.md` 的智能体平台。
 
 ## 中文说明
 
@@ -17,6 +17,7 @@
 - 检查静态资源、移动端、WebGL、PNG 导出和生产环境报错。
 - 排查 HTML 能打开但 JavaScript 被 CSP 阻止的问题。
 - 在阿里云 ESA Pages 中为单个子项目配置精确的响应头规则。
+- 把 MP4 与封面加入作品集，并处理文件上限、转码、同源托管、Range、CSP 和生产分支发布。
 
 ### 前置条件
 
@@ -128,9 +129,12 @@ publishing-portfolio-projects/
 │   ├── deployment-platforms.md
 │   ├── esa-pages.md
 │   ├── platform-compatibility.md
+│   ├── video-publishing.md
 │   └── verification.md
 └── scripts/
     ├── build-package.py
+    ├── check-video-release.py
+    ├── test_check_video_release.py
     ├── check-portability.mjs
     └── check-release.mjs
 ```

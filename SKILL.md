@@ -1,6 +1,6 @@
 ---
 name: publishing-portfolio-projects
-description: 用于将现有网页项目发布为个人网站作品卡片和经过验证的独立子页面，并完成子路径构建、封面、导航、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 SKILL.md 的智能体平台。
+description: 用于向个人网站作品集发布网页项目、视频或图片作品，并完成作品入口、子路径、媒体托管、CSP、WebGL 导出及生产环境验收。适用于 Codex、WorkBuddy、CodeBuddy、扣子等支持 SKILL.md 的智能体平台。
 ---
 
 # 发布作品集项目
@@ -19,6 +19,8 @@ description: 用于将现有网页项目发布为个人网站作品卡片和经�
 
 在 Codex、WorkBuddy、CodeBuddy、扣子、豆包模型工作流或其他智能体平台安装时，阅读 [平台兼容说明](references/platform-compatibility.md)。部署到腾讯云、阿里云或其他托管服务前，阅读 [部署平台兼容说明](references/deployment-platforms.md)。
 
+发布 MP4、视频封面或作品集视频画廊时，必须先阅读 [视频作品发布](references/video-publishing.md)。该流程包含平台文件上限、转码、同源托管、生产分支、CSP、Range 请求和缓存验收。
+
 ## 必要输入
 
 优先从工作区和托管控制台中识别以下信息，不要先询问用户：作品集仓库、部署平台、公开或构建目录、目标 slug、项目构建命令、封面来源和正式域名。只有无法发现的信息才向用户询问。
@@ -27,13 +29,13 @@ description: 用于将现有网页项目发布为个人网站作品卡片和经�
 
 1. 阅读仓库说明、部署配置、首页结构、测试和当前响应头；记录修改前的 Git 状态，并识别实际托管平台及其配置优先级。
 2. 选择稳定的小写 slug。将子项目构建到 `/<slug>/`；Vite 使用 `vite build --base=/<slug>/`。把根绝对资源路径改为 `BASE_URL` 或框架等价方式。嵌入作品集后添加返回 `/#projects` 的入口。
-3. 从验证通过的真实应用画面制作封面。保持宽高比和准确的替代文本，不依赖远程图片服务。
+3. 从验证通过的真实应用画面制作封面。保持宽高比和准确的替代文本，不依赖远程图片服务。视频作品先确认平台单文件上限，再转码、生成封面并运行 `python scripts/check-video-release.py <public-dir>`。
 4. 将生产构建复制到作品集静态目录的 `<public>/<slug>/`。添加真实首页卡片、操作入口、响应式样式和站点地图条目，保留现有字体、元数据、导航和无关内容。
 5. 运行 `node scripts/check-release.mjs <public-dir> <slug>`、仓库测试和项目生产构建。使用普通静态服务器打开最终目录；框架开发服务器可能重写路径或暴露仅开发环境存在的全局对象。
 6. 在生产浏览器中验证“首页 → 卡片 → 子页面 → 返回入口”。检查代表性交互、移动端布局、本地资源、控制台错误和下载内容。存在导出功能时，验证文件尺寸和非空像素。
 7. 根据托管平台配置构建目录、路由、缓存、自定义域名和路径级响应头。只提交已审查的文件，推送部署分支并验证公开域名。不得把本地成功描述为线上发布成功。
 
-完整验收项见 [验收矩阵](references/verification.md)。遇到阿里云 ESA Pages 或 CSP 问题时，阅读 [ESA Pages 与 CSP](references/esa-pages.md)。
+完整验收项见 [验收矩阵](references/verification.md)。遇到阿里云 ESA Pages、生产分支或 CSP 问题时，阅读 [ESA Pages 与 CSP](references/esa-pages.md)。
 
 ## 发布约束
 
